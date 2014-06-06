@@ -33,6 +33,7 @@
   font-family: Arial;
   margin: 2px 5px 0 0;
   padding: 4px 20px 3px;
+  height: auto;
   width:210px;
   font-size: 11px;
   line-height: 14px;
@@ -40,7 +41,7 @@
   outline: none;
 }
 
-.DV-searchInput[type="search"] {
+.DV-docViewer .DV-searchInput[type=text] {
   margin: 4px 10px 0 0;
 }
 .DV-searchInput.placeholder {
@@ -63,8 +64,8 @@
 .DV-searchDocument .DV-searchInput-cancel {
   visibility: hidden;
   position: absolute;
-  right: 12px;
-  top: 8px;
+  right: 17px;
+  top: 10px;
   background: transparent url(../../../images/DV/embed/close.png) no-repeat 0 0;
   width: 11px;
   height: 11px;

@@ -21,8 +21,8 @@ DV.Schema.events = {
     var offsets       = doc.baseHeightsPortionOffsets;
     var scrollPos     = this.viewer.scrollPosition = win.scrollTop;
     var midpoint      = scrollPos + (this.viewer.$(win).height() / 3);
-    var currentPage   = _.sortedIndex(offsets, scrollPos);
-    var middlePage    = _.sortedIndex(offsets, midpoint);
+    var currentPage   = DV._.sortedIndex(offsets, scrollPos);
+    var middlePage    = DV._.sortedIndex(offsets, midpoint);
     if (offsets[currentPage] == scrollPos) currentPage++ && middlePage++;
     var pageIds       = this.helpers.sortPages(middlePage - 1);
     var total         = doc.totalPages;
@@ -49,7 +49,6 @@ DV.Schema.events = {
     var viewer = this.viewer;
     if(viewer.busy === false){
       viewer.busy = true;
-
       for(var i = 0; i < this.viewer.observers.length; i++){
         this[viewer.observers[i]].call(this);
       }

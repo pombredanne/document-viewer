@@ -10,12 +10,12 @@ DV.Api.prototype = {
   currentPage : function() {
     return this.viewer.models.document.currentPage();
   },
-  
+
   // Set the current page of the document.
   setCurrentPage : function(page) {
     this.viewer.helpers.jump(page - 1);
   },
-  
+
   // Register a callback for when the page is changed.
   onPageChange : function(callback) {
     this.viewer.models.document.onPageChangeCallbacks.push(callback);
@@ -60,7 +60,7 @@ DV.Api.prototype = {
     return this.viewer.models.document.totalPages;
   },
 
-  // Return the name of the conributor, if available.
+  // Return the name of the contributor, if available.
   getContributor : function() {
     return this.viewer.schema.document.contributor;
   },
@@ -74,7 +74,7 @@ DV.Api.prototype = {
   // should be an array of sections in the canonical format:
   // {title: "Chapter 1", pages: "1-12"}
   setSections : function(sections) {
-    sections = _.sortBy(sections, function(s){ return s.page; });
+    sections = DV._.sortBy(sections, function(s){ return s.page; });
     this.viewer.schema.data.sections = sections;
     this.viewer.models.chapters.loadChapters();
     this.redraw();
@@ -82,7 +82,7 @@ DV.Api.prototype = {
 
   // Get a list of every section in the document.
   getSections : function() {
-    return _.clone(this.viewer.schema.data.sections || []);
+    return DV._.clone(this.viewer.schema.data.sections || []);
   },
 
   // Get the document's description.
@@ -155,7 +155,7 @@ DV.Api.prototype = {
     if (overwriteOriginal) {
       this.viewer.models.document.originalPageText = {};
     } else {
-      _.each(this.viewer.models.document.originalPageText, function(originalPageText, pageNumber) {
+      DV._.each(this.viewer.models.document.originalPageText, function(originalPageText, pageNumber) {
         pageNumber = parseInt(pageNumber, 10);
         if (originalPageText != pageText[pageNumber-1]) {
           self.setPageText(originalPageText, pageNumber);
@@ -184,15 +184,15 @@ DV.Api.prototype = {
       this.viewer.pageSet.reflowPages();
     }
   },
-  
+
   getAnnotationsBySortOrder : function() {
     return this.viewer.models.annotations.sortAnnotations();
   },
-  
+
   getAnnotationsByPageIndex : function(idx) {
     return this.viewer.models.annotations.getAnnotations(idx);
   },
-  
+
   getAnnotation : function(aid) {
     return this.viewer.models.annotations.getAnnotation(aid);
   },
@@ -223,11 +223,11 @@ DV.Api.prototype = {
   onChangeState : function(callback) {
     this.viewer.onStateChangeCallbacks.push(callback);
   },
-  
+
   getState : function() {
     return this.viewer.state;
   },
-  
+
   // set the state. This takes "ViewDocument," "ViewThumbnails", "ViewText"
   setState : function(state) {
     this.viewer.open(state);
@@ -265,16 +265,24 @@ DV.Api.prototype = {
     tabs.first().addClass('DV-first');
     tabs.last().addClass('DV-last');
   },
-  
+
   // Register hooks into DV's hash history
   registerHashListener : function(matcher, callback) {
     this.viewer.history.register(matcher, callback);
   },
-  
+
   // Clobber DV's existing history hooks
   clearHashListeners : function() {
     this.viewer.history.defaultCallback = null;
     this.viewer.history.handlers = [];
+  },
+
+  // Unload the viewer.
+  unload: function(viewer) {
+    this.viewer.helpers.unbindEvents();
+    DV.jQuery('.DV-docViewer', this.viewer.options.container).remove();
+    this.viewer.helpers.stopCheckTimer();
+    delete DV.viewers[this.viewer.schema.document.id];
   },
 
   // ---------------------- Enter/Leave Edit Modes -----------------------------

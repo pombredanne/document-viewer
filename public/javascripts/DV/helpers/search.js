@@ -1,4 +1,4 @@
-_.extend(DV.Schema.helpers, {
+DV._.extend(DV.Schema.helpers, {
   getSearchResponse: function(query){
     var handleResponse = DV.jQuery.proxy(function(response){
       this.viewer.searchResponse = response;
@@ -10,7 +10,7 @@ _.extend(DV.Schema.helpers, {
       if (hasResults) {
         // this.viewer.history.save('search/p'+response.results[0]+'/'+response.query);
         var currentPage = this.viewer.models.document.currentPage();
-        var page = (_.include(response.results, currentPage)) ? currentPage : response.results[0];
+        var page = (DV._.include(response.results, currentPage)) ? currentPage : response.results[0];
         this.events.loadText(page - 1, this.highlightSearchResponses);
       } else {
         this.highlightSearchResponses();
@@ -50,7 +50,6 @@ _.extend(DV.Schema.helpers, {
 
   },
   highlightSearchResponses: function(){
-
     var viewer    = this.viewer;
     var response  = viewer.searchResponse;
 
@@ -74,11 +73,12 @@ _.extend(DV.Schema.helpers, {
 
     // Replaces spaces in query with `\s+` to match newlines in textContent,
     // escape regex char contents (like "()"), and only match on word boundaries.
-    var query             = '\\b' + response.query.replace(/[-[\]{}()*+?.,\\^$|#]/g, "\\$&").replace(/\s+/g, '\\s+') + '\\b';
+    var boundary          = '(\\b|\\B)';
+    var query             = boundary + '('+response.query.replace(/[-[\]{}()*+?.,\\^$|#]/g, "\\$&").replace(/\s+/g, '\\s+')+')' + boundary;
     var textContent       = this.viewer.$('.DV-textContents');
     var currentPageText   = textContent.text();
     var pattern           = new RegExp(query,"ig");
-    var replacement       = currentPageText.replace(pattern,'<span class="DV-searchMatch">$&</span>');
+    var replacement       = currentPageText.replace(pattern,'$1<span class="DV-searchMatch">$2</span>$3');
 
     textContent.html(replacement);
 
@@ -185,7 +185,7 @@ _.extend(DV.Schema.helpers, {
     this.viewer.$('span.DV-totalSearchResult').text('');
     this.viewer.$('span.DV-searchQuery').text(name);
     this.viewer.$('span.DV-currentSearchResult').text("Searching");
-    this.events.loadText(this.models.document.currentIndex(), _.bind(this.viewer.helpers.highlightEntity, this.viewer.helpers, offset, length));
+    this.events.loadText(this.models.document.currentIndex(), DV._.bind(this.viewer.helpers.highlightEntity, this.viewer.helpers, offset, length));
   },
   cleanUpSearch: function(){
     var viewer            = this.viewer;
